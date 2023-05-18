@@ -19,69 +19,12 @@
         font-size: 20px;
       }
     }
-  body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  width: 100%;
-  height: 100vh;
-}
-
-.animation-wrapper {
-  width: 50%;
-  padding-bottom: 50%;
-}
-
-.sphere-animation {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 580px;
-  height: 580px;
-  margin: -290px 0 0 -290px;
-}
-
-.sphere path {
-  fill: url(#sphereGradient);
-  stroke-width: 1px;
-  stroke: rgba(80,80,80,.35);
-  backface-visibility: hidden;
-}
-
-@media (min-width: 500px) {
-  .sphere path {
-    stroke-width: .4px;
-  }
-}
 </style>
 </head>
 <body>
   <h1>Welcome</h1>
   <p id="device-info">This is a tip.</p>
-  <div class="animation-wrapper">
-  <div class="sphere-animation">
-    <svg class="sphere" viewBox="0 0 440 440" stroke="rgba(80,80,80,.35)">
-      <defs>
-        <linearGradient id="sphereGradient" x1="5%" x2="5%" y1="0%" y2="15%">
-          <stop stop-color="#373734" offset="0%"/>
-          <stop stop-color="#242423" offset="50%"/>
-          <stop stop-color="#0D0D0C" offset="100%"/>
-        </linearGradient>
-      </defs>
-      <path d="M361.604 361.238c-24.407 24.408-51.119 37.27-59.662 28.727-8.542-8.543 4.319-35.255 28.726-59.663 24.408-24.407 51.12-37.269 59.663-28.726 8.542 8.543-4.319 35.255-28.727 59.662z"/>
-      <path d="M360.72 360.354c-35.879 35.88-75.254 54.677-87.946 41.985-12.692-12.692 6.105-52.067 41.985-87.947 35.879-35.879 75.254-54.676 87.946-41.984 12.692 12.692-6.105 52.067-41.984 87.946z"/>
-      <path d="M357.185 356.819c-44.91 44.91-94.376 68.258-110.485 52.149-16.11-16.11 7.238-65.575 52.149-110.485 44.91-44.91 94.376-68.259 110.485-52.15 16.11 16.11-7.239 65.576-52.149 110.486z"/>
-      <path d="M350.998 350.632c-53.21 53.209-111.579 81.107-130.373 62.313-18.794-18.793 9.105-77.163 62.314-130.372 53.209-53.21 111.579-81.108 130.373-62.314 18.794 18.794-9.105 77.164-62.314 130.373z"/>
-      <path d="M341.383 341.017c-62.872 62.872-132.057 95.777-154.926 72.907-22.87-22.87 10.035-92.055 72.907-154.926 62.872-62.872 132.057-95.777 154.926-72.907 22.87 22.87-10.035 92.055-72.907 154.926z"/>
-      <path d="M326.486 326.12c-71.11 71.111-149.652 108.31-175.235 82.726-25.583-25.583 11.616-104.125 82.727-175.236 71.11-71.11 149.652-108.309 175.235-82.726 25.583 25.583-11.616 104.125-82.727 175.236z"/>
-      <path d="M304.67 304.304c-78.986 78.986-166.205 120.17-194.21 92.165-28.005-28.005 13.179-115.224 92.165-194.21 78.986-78.986 166.205-120.17 194.21-92.165 28.005 28.005-13.18 115.224-92.165 194.21z"/>
-      <path d="M274.76 274.394c-90.232 90.231-189.333 137.387-221.886 104.834-32.552-32.553 14.603-131.653 104.835-221.886 90.231-90.231 189.333-137.387 221.886-104.834 32.552 32.553-14.603 131.654-104.835 221.886z"/>
-      <path d="M232.173 231.806c-109.104 109.104-229.293 166.067-268.316 127.044-39.023-39.023 18.94-159.212 128.044-268.316 109.104-109.104 229.293-166.067 268.316-127.044 39.023 39.023-18.94 159.212-128.044 268.316z"/>
-      <path d="M168.331 167.964c-139.514 139.514-292.223 211.66-342.605 161.277-50.382-50.382 21.762-203.091 161.277-342.605 139.514-139.514 292.223-211.66 342.605-161.277 50.382 50.382-21.762 203.091-161.277 342.605z"/>
-    </svg>
-  </div>
-</div>
+  
   <script>
     const isMobile = 'ontouchstart' in window;
     const deviceInfo = document.getElementById('device-info');
@@ -131,91 +74,6 @@
       };
     }
     
-    function fitElementToParent(el, padding) {
-  var timeout = null;
-
-  function resize() {
-    if (timeout) clearTimeout(timeout);
-    anime.set(el, {scale: 1});
-    var pad = padding || 0;
-    var parentEl = el.parentNode;
-    var elOffsetWidth = el.offsetWidth - pad;
-    var parentOffsetWidth = parentEl.offsetWidth;
-    var ratio = parentOffsetWidth / elOffsetWidth;
-    timeout = setTimeout(anime.set(el, {scale: ratio}), 10);
-  }
-
-  resize();
-  window.addEventListener('resize', resize);
-}
-
-var sphereAnimation = (function() {
-  var sphereEl = document.querySelector('.sphere-animation');
-  var spherePathEls = sphereEl.querySelectorAll('.sphere path');
-  var pathLength = spherePathEls.length;
-  var hasStarted = false;
-  var animations = [];
-
-  fitElementToParent(sphereEl);
-
-  var breathAnimation = anime({
-    begin: function() {
-      for (var i = 0; i < pathLength; i++) {
-        animations.push(anime({
-          targets: spherePathEls[i],
-          stroke: {value: ['rgba(255,75,75,1)', 'rgba(80,80,80,.35)'], duration: 500},
-          translateX: [2, -4],
-          translateY: [2, -4],
-          easing: 'easeOutQuad',
-          autoplay: false
-        }));
-      }
-    },
-    update: function(ins) {
-      animations.forEach(function(animation, i) {
-        var percent = (1 - Math.sin((i * .35) + (.0022 * ins.currentTime))) / 2;
-        animation.seek(animation.duration * percent);
-      });
-    },
-    duration: Infinity,
-    autoplay: false
-  });
-
-  var introAnimation = anime.timeline({
-    autoplay: false
-  })
-  .add({
-    targets: spherePathEls,
-    strokeDashoffset: {
-      value: [anime.setDashoffset, 0],
-      duration: 3900,
-      easing: 'easeInOutCirc',
-      delay: anime.stagger(190, {direction: 'reverse'})
-    },
-    duration: 2000,
-    delay: anime.stagger(60, {direction: 'reverse'}),
-    easing: 'linear'
-  }, 0);
-
-  var shadowAnimation = anime({
-    targets: '#sphereGradient',
-    x1: '25%',
-    x2: '25%',
-    y1: '0%',
-    y2: '75%',
-    duration: 30000,
-    easing: 'easeOutQuint',
-    autoplay: false
-  }, 0);
-
-  function init() {
-    introAnimation.play();
-    breathAnimation.play();
-    shadowAnimation.play();
-  }
-
-  init();
-})();
   </script>
 </body>
 </html>
