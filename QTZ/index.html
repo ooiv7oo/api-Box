@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Force jump to QQ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Welcome</h1>
+  <p>This is a paragraph on my page.</p>
+  
+  <script>
+function initialize() {
+  generateProfileCard();
+}
+
+window.onload = initialize;
+
+function generateProfileCard() {
+  const qq = new URLSearchParams(window.location.search).get('qq');
+  if (!qq) {
+    alert('参数不能为空！');
+    return;
+  }
+  const url = `mqq://card/show_pslcard?src_type=internal&source=sharecard&version=1&uin=${qq}`;
+  window.location.href = url;
+  setTimeout(function() {
+    window.opener = null;
+    window.close();
+  }, 600);
+}
+</script>
+</body>
+</html>
