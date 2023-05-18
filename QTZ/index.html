@@ -4,6 +4,7 @@
   <title>Force jump to QQ</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.131.2/build/three.min.js"></script>
   <style>
     /* 响应式设计 */
     @media (max-width: 768px) {
@@ -83,123 +84,51 @@
     }
     // 获取canvas元素和WebGL上下文
 const canvas = document.getElementById('canvas');
-const gl = canvas.getContext('webgl');
 
-// 定义顶点和片元着色器代码
-const vertexShaderSource = `
-    attribute vec3 a_position;
+// 创建场景、相机和渲染器
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+camera.position.z = 5;
+const renderer = new THREE.WebGLRenderer({ canvas });
 
-    uniform mat4 u_matrix;
-    uniform float u_size;
+// 创建小球的材质和几何体
+const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+const geometry = new THREE.SphereGeometry(1, 32, 32);
 
-    void main() {
-        gl_Position = u_matrix * vec4(a_position * u_size, 1.0);
-    }
-`;
-
-const fragmentShaderSource = `
-    precision mediump float;
-
-    uniform float u_time;
-
-    void main() {
-        float t = u_time * 0.1;
-        float x = gl_FragCoord.x / 200.0;
-        float y = gl_FragCoord.y / 200.0;
-        float r = sqrt(x * x + y * y);
-        float theta = atan(y, x);
-        float dx = 0.1 * sin(theta * 5.0 + t);
-        float dy = 0.1 * cos(theta * 5.0 + t);
-        float dr = 0.1 * sin(r * 5.0 + t);
-        float u = x + dx + dr;
-        float v = y + dy + dr;
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-        gl_FragColor.rgb += 0.5 * sin(u * 50.0 + t);
-        gl_FragColor.rgb += 0.2 * sin(u * 100.0 + v * 100.0 + t);
-        gl_FragColor.rgb += 0.1 * sin(r * 100.0 + t);
-    }
-`;
-
-// 创建顶点着色器
-const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-gl.shaderSource(vertexShader, vertexShaderSource);
-gl.compileShader(vertexShader);
-
-if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-    console.error('Vertex shader compile error:', gl.getShaderInfoLog(vertexShader));
-}
-
-// 创建片元着色器
-const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-gl.shaderSource(fragmentShader, fragmentShaderSource);
-gl.compileShader(fragmentShader);
-
-if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-    console.error('Fragment shader compile error:', gl.getShaderInfoLog(fragmentShader));
-}
-
-// 创建着色器程序
-const program = gl.createProgram();
-gl.attachShader(program, vertexShader);
-gl.attachShader(program, fragmentShader);
-gl.linkProgram(program);
-
-if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.error('Program link error:', gl.getProgramInfoLog(program));
-}
-
-gl.useProgram(program);
-
-// 获取顶点位置属性和uniform变量
-const positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
-const matrixUniformLocation = gl.getUniformLocation(program, 'u_matrix');
-const sizeUniformLocation = gl.getUniformLocation(program, 'u_size');
-const timeUniformLocation = gl.getUniformLocation(program, 'u_time');
-
-// 定义顶点数据
-const positions = [
-    -1, -1, 0,
-    -1, 1, 0,
-    1, 1, 0,
-    1, -1, 0
-];
-
-// 创建顶点缓冲区
-const positionBuffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-
-// 设置顶点属性指针
-gl.enableVertexAttribArray(positionAttributeLocation);
-gl.vertexAttribPointer(positionAttributeLocation, 3, gl.FLOAT, false, 0, 0);
-
-// 设置视口和清空颜色
-gl.viewport(0, 0, canvas.width, canvas.height);
-gl.clearColor(1.0, 1.0, 1.0, 1.0);
-gl.clear(gl.COLOR_BUFFER_BIT);
-
-// 设置矩阵和大小
-const matrix = new Float32Array([
-    2.0 / canvas.width, 0.0, 0.0, 0.0,
-    0.0, -2.0 / canvas.height, 0.0, 0.0,
-    0.0, 0.0, 1.0, 0.0,
-    -1.0, 1.0, 0.0, 1.0
-]);
-gl.uniformMatrix4fv(matrixUniformLocation, false, matrix);
-gl.uniform1f(sizeUniformLocation, canvas.width * 0.5);
+// 创建小球的网格对象
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
 
 // 定义动画循环函数
 function animate(time) {
-    // 清空颜色缓冲区
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    // 计算小球表面的流动和冒泡
+    const t = time * 0.001;
+    const positions = mesh.geometry.attributes.position.array;
+    for (let i = 0; i < positions.length; i += 3) {
+        const x = positions[i];
+        const y = positions[i + 1];
+        const z = positions[i + 2];
+        const r = Math.sqrt(x * x + y * y + z * z);
+        const theta = Math.atan2(y, x);
+        const phi = Math.acos(z / r);
+        const dx = 0.05 * Math.sin(theta * 5 + t);
+        const dy = 0.05 * Math.cos(theta * 5 + t);
+        const dr = 0.05 * Math.sin(r * 5 + t);
+        const u = x + dx + dr;
+        const v = y + dy + dr;
+        const s = 0.5 * Math.sin(u * 50 + t);
+        const r2 = Math.sqrt(u * u + v * v + z * z);
+        const s2 = 0.2 * Math.sin(u * 20 + v * 20 + z * 20 + t);
+        positions[i] = u + s * v / r2 + s2 * u / r2;
+        positions[i + 1] = v - s * u / r2 + s2 * v / r2;
+        positions[i + 2] = z + s2 * z / r2;
+    }
+    mesh.geometry.attributes.position.needsUpdate = true;
 
-    // 更新时间uniform变量
-    gl.uniform1f(timeUniformLocation, time);
+    // 渲染场景
+    renderer.render(scene, camera);
 
-    // 绘制小球
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-
-    // 循环调用动画函数
+    // 启动下一帧动画
     requestAnimationFrame(animate);
 }
 
