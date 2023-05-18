@@ -19,38 +19,33 @@
         font-size: 20px;
       }
     }
-   .svg-attributes-demo {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto;
-        }
-  </style>
+    
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 4rem;
+  width: 10rem;
+  font-size: 1.5rem;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 1px 1px 5px black;
+  background-color: white;
+}   
+</style>
 </head>
 <body>
   <h1>Welcome</h1>
   <p id="device-info">This is a tip.</p>
-      <div class="svg-attributes-demo">
-      <svg viewBox="0 0 128 128">
-        <polygon points="64 0 119.426 32 64 64 8.574 32"></polygon>
-        <filter id="turbulence">
-          <feTurbulence type="fractalNoise" baseFrequency="0 0" numOctaves="1" result="noise"></feTurbulence>
-          <feColorMatrix type="saturate" values="0" result="saturate"></feColorMatrix>
-          <feComponentTransfer>
-            <feFuncR type="discrete" tableValues="0 1"></feFuncR>
-            <feFuncG type="discrete" tableValues="0 1"></feFuncG>
-            <feFuncB type="discrete" tableValues="0 1"></feFuncB>
-            <feFuncA type="identity" slope="1"></feFuncA>
-          </feComponentTransfer>
-          <feComposite operator="in" in2="SourceGraphic"></feComposite>
-        </filter>
-        <filter id="displacement" x="-50%" y="-50%" width="200%" height="200%">
-          <feTurbulence type="fractalNoise" baseFrequency="0 0" numOctaves="1" result="noise"></feTurbulence>
-          <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="1" in="SourceGraphic"></feDisplacementMap>
-        </filter>
-        <polygon points="64 128 8.574 96 8.574 32 64 0 119.426 32 119.426 96" filter="url(#turbulence)"></polygon>
-        <polygon points="64 128 8.574 96 8.574 32 64 0 119.426 32 119.426 96" filter="url(#displacement)"></polygon>
-      </svg>
-    </div>
+  <button id='runaway-btn'>Click Me &#129315;</button>
   
   <script>
     const isMobile = 'ontouchstart' in window;
@@ -100,15 +95,29 @@
         retryGenerateProfileCard(3, 1000);
       };
     }
-    anime({
-            targets: ['.svg-attributes-demo polygon', 'feTurbulence', 'feDisplacementMap'],
-            points: '64 128 8.574 96 8.574 32 64 0 119.426 32 119.426 96',
-            baseFrequency: 0,
-            scale: 1,
-            loop: true,
-            direction: 'alternate',
-            easing: 'easeInOutExpo'
-        });
-    </script>
+    
+    const button = document.getElementById("runaway-btn");
+
+const animateMove = (element, prop, pixels) =>
+  anime({
+    targets: element,
+    [prop]: `${pixels}px`,
+    easing: "easeOutCirc"
+  });
+
+["mouseover", "click"].forEach(function (el) {
+  button.addEventListener(el, function (event) {
+    const top = getRandomNumber(window.innerHeight - this.offsetHeight);
+    const left = getRandomNumber(window.innerWidth - this.offsetWidth);
+
+    animateMove(this, "left", left).play();
+    animateMove(this, "top", top).play();
+  });
+});
+
+const getRandomNumber = (num) => {
+  return Math.floor(Math.random() * (num + 1));
+};
+  </script>
 </body>
 </html>
