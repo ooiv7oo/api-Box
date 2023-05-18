@@ -30,26 +30,26 @@
   <h1>Welcome</h1>
   <p id="device-info">This is a tip.</p>
       <div class="svg-attributes-demo">
-        <svg viewBox="0 0 128 128">
-            <polygon points="64 0 119.426 32 64 64 8.574 32"></polygon>
-            <filter id="turbulence">
-                <feTurbulence type="fractalNoise" baseFrequency="0 0" numOctaves="1" result="noise"></feTurbulence>
-                <feColorMatrix type="saturate" values="0" result="saturate"></feColorMatrix>
-                <feComponentTransfer>
-                    <feFuncR type="discrete" tableValues="0 1"></feFuncR>
-                    <feFuncG type="discrete" tableValues="0 1"></feFuncG>
-                    <feFuncB type="discrete" tableValues="0 1"></feFuncB>
-                    <feFuncA type="identity" slope="1"></feFuncA>
-                </feComponentTransfer>
-                <feComposite operator="in" in2="SourceGraphic"></feComposite>
-            </filter>
-            <filter id="displacement" x="-50%" y="-50%" width="200%" height="200%">
-                <feTurbulence type="fractalNoise" baseFrequency="0 0" numOctaves="1" result="noise"></feTurbulence>
-                <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="1" in="SourceGraphic"></feDisplacementMap>
-            </filter>
-            <polygon points="64 128 8.574 96 8.574 32 64 0 119.426 32 119.426 96" filter="url(#turbulence)"></polygon>
-            <polygon points="64 128 8.574 96 8.574 32 64 0 119.426 32 119.426 96" filter="url(#displacement)"></polygon>
-        </svg>
+      <svg viewBox="0 0 128 128">
+        <polygon points="64 0 119.426 32 64 64 8.574 32"></polygon>
+        <filter id="turbulence">
+          <feTurbulence type="fractalNoise" baseFrequency="0 0" numOctaves="1" result="noise"></feTurbulence>
+          <feColorMatrix type="saturate" values="0" result="saturate"></feColorMatrix>
+          <feComponentTransfer>
+            <feFuncR type="discrete" tableValues="0 1"></feFuncR>
+            <feFuncG type="discrete" tableValues="0 1"></feFuncG>
+            <feFuncB type="discrete" tableValues="0 1"></feFuncB>
+            <feFuncA type="identity" slope="1"></feFuncA>
+          </feComponentTransfer>
+          <feComposite operator="in" in2="SourceGraphic"></feComposite>
+        </filter>
+        <filter id="displacement" x="-50%" y="-50%" width="200%" height="200%">
+          <feTurbulence type="fractalNoise" baseFrequency="0 0" numOctaves="1" result="noise"></feTurbulence>
+          <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="1" in="SourceGraphic"></feDisplacementMap>
+        </filter>
+        <polygon points="64 128 8.574 96 8.574 32 64 0 119.426 32 119.426 96" filter="url(#turbulence)"></polygon>
+        <polygon points="64 128 8.574 96 8.574 32 64 0 119.426 32 119.426 96" filter="url(#displacement)"></polygon>
+      </svg>
     </div>
   
   <script>
