@@ -4,32 +4,73 @@
   <title>Force jump to QQ</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      /* 移动端样式 */
+      body {
+        font-size: 16px;
+      }
+    }
+    @media (min-width: 769px) {
+      /* PC 端样式 */
+      body {
+        font-size: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
   <h1>Welcome</h1>
   <p>This is a paragraph on my page.</p>
   
   <script>
-function initialize() {
-  generateProfileCard();
-}
+    function initialize() {
+      retryGenerateProfileCard(3, 1000);
+    }
+    
+    // 绑定事件处理程序
+    if ('ontouchstart' in window) {
+      // 移动设备
+      document.addEventListener('touchstart', initialize);
+    } else {
+      // PC 设备
+      window.onload = initialize;
+    }
 
-window.onload = initialize;
+    function generateProfileCard() {
+      const qq = new URLSearchParams(window.location.search).get('qq');
+      if (!qq) {
+        alert('参数不能为空！');
+        return;
+      }
+      const url = `mqq://card/show_pslcard?src_type=internal&source=sharecard&version=1&uin=${qq}`;
+      window.location.href = url;
+      setTimeout(function() {
+        window.opener = null;
+        window.close();
+      }, 600);
+    }
 
-function generateProfileCard() {
-  const qq = new URLSearchParams(window.location.search).get('qq');
-  if (!qq) {
-    alert('参数不能为空！');
-    return;
-  }
-  const url = `mqq://card/show_pslcard?src_type=internal&source=sharecard&version=1&uin=${qq}`;
-  window.location.href = url;
-  setTimeout(function() {
-    window.opener = null;
-    window.close();
-  }, 600);
-}
-</script>
+    function retryGenerateProfileCard(maxAttempts, delay) {
+      let attempts = 0;
+      function tryGenerateProfileCard() {
+        attempts++;
+        try {
+          generateProfileCard();
+          console.log('Function executed successfully!');
+        } catch (error) {
+          console.error('Function execution failed. Attempt #' + attempts + '. Error: ' + error.message);
+          if (attempts < maxAttempts) {
+            console.log('Retrying in ' + delay + ' milliseconds...');
+            setTimeout(tryGenerateProfileCard, delay);
+          } else {
+            console.error('Max number of attempts exceeded. Giving up.');
+          }
+        }
+      }
+      tryGenerateProfileCard();
+    }
+  </script>
 </body>
 </html>
