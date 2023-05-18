@@ -22,11 +22,20 @@
 </head>
 <body>
   <h1>Welcome</h1>
-  <p>This is a paragraph on my page.</p>
+  <p id="device-info">This is a paragraph on my page.</p>
   
   <script>
     function initialize() {
       retryGenerateProfileCard(3, 1000);
+      
+      // 根据不同设备类型修改文本内容
+      const isMobile = 'ontouchstart' in window;
+      const deviceInfo = document.getElementById('device-info');
+      if (isMobile) {
+        deviceInfo.textContent = 'Your current device is a mobile device, which can be called by touching it.';
+      } else {
+        deviceInfo.textContent = 'Your current device is on the PC side and is being called.';
+      }
     }
     
     // 绑定事件处理程序
