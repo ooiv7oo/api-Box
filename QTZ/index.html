@@ -25,27 +25,9 @@
   <p id="device-info">This is a paragraph on my page.</p>
   
   <script>
-    function initialize() {
-      retryGenerateProfileCard(3, 1000);
-      
-      // 根据不同设备类型修改文本内容
-      const isMobile = 'ontouchstart' in window;
-      const deviceInfo = document.getElementById('device-info');
-      if (isMobile) {
-        deviceInfo.textContent = 'Your current device is a mobile device, which can be called by touching it.';
-      } else {
-        deviceInfo.textContent = 'Your current device is on the PC side and is being called.';
-      }
-    }
-    
-    // 绑定事件处理程序
-    if ('ontouchstart' in window) {
-      // 移动设备
-      document.addEventListener('touchstart', initialize);
-    } else {
-      // PC 设备
-      window.onload = initialize;
-    }
+    const isMobile = 'ontouchstart' in window;
+    const deviceInfo = document.getElementById('device-info');
+    deviceInfo.textContent = isMobile ? 'Your current device is a mobile device, which can be called by touching it.' : 'Your current device is on the PC side and is being called.';
 
     function generateProfileCard() {
       const qq = new URLSearchParams(window.location.search).get('qq');
@@ -79,6 +61,16 @@
         }
       }
       tryGenerateProfileCard();
+    }
+
+    if (isMobile) {
+      document.addEventListener('touchstart', function() {
+        retryGenerateProfileCard(3, 1000);
+      });
+    } else {
+      window.onload = function() {
+        retryGenerateProfileCard(3, 1000);
+      };
     }
   </script>
 </body>
