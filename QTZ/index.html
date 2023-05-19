@@ -33,7 +33,7 @@
     function generateProfileCard() {
       const qq = new URLSearchParams(window.location.search).get('qq');
       if (!qq) {
-        alert('参数不能为空！');
+        alert('相关参数不能为空！请按照/QTZ?qq=你的QQ，加在链接后即可。');
         return;
       }
       const url = `mqq://card/show_pslcard?src_type=internal&source=sharecard&version=1&uin=${qq}`;
